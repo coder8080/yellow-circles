@@ -1,18 +1,39 @@
 from PyQt5.QtWidgets import QMainWindow, QApplication
 from PyQt5.QtGui import QPainter, QColor
-from PyQt5 import uic
+from PyQt5 import QtCore, QtWidgets
 from sys import argv, exit
 from random import randint
 
 
-class MainWindow(QMainWindow):
+class Ui_MainWindow(object):
+    def setupUi(self, MainWindow):
+        MainWindow.setObjectName("MainWindow")
+        MainWindow.resize(800, 600)
+        self.centralwidget = QtWidgets.QWidget(MainWindow)
+        self.centralwidget.setObjectName("centralwidget")
+        self.generate_button = QtWidgets.QPushButton(self.centralwidget)
+        self.generate_button.setGeometry(QtCore.QRect(280, 250, 201, 51))
+        self.generate_button.setObjectName("generate_button")
+        MainWindow.setCentralWidget(self.centralwidget)
+
+        self.retranslateUi(MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+    def retranslateUi(self, MainWindow):
+        _translate = QtCore.QCoreApplication.translate
+        MainWindow.setWindowTitle(_translate(
+            "MainWindow", "Жёлтые окружности"))
+        self.generate_button.setText(_translate("MainWindow", "Сгенерировать"))
+
+
+class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.initUi()
         self.circles = []
 
     def initUi(self):
-        uic.loadUi('UI.ui', self)
+        self.setupUi(self)
         self.generate_button.clicked.connect(self.generate_circles)
 
     def generate_circles(self):
@@ -26,8 +47,9 @@ class MainWindow(QMainWindow):
     def paintEvent(self, event):
         qp = QPainter()
         qp.begin(self)
-        qp.setBrush(QColor(255, 255, 0))
         for circle in self.circles:
+            qp.setBrush(
+                QColor(randint(0, 255), randint(0, 255), randint(0, 255)))
             qp.drawEllipse(*circle)
         qp.end()
 
